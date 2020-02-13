@@ -8,38 +8,36 @@ globals:
   workerPswd: ${fn.password}
   path: /opt/wildfly/ssl/admin
 
-baseUrl: https://raw.githubusercontent.com/jelastic-jps/wildfly/master/addons/auto-clustering
+baseUrl: https://raw.githubusercontent.com/SiryjVyiko/wildfly/master/addons/auto-clustering
 
 nodeGroupAlias:
   ${targetNodes.nodeGroup}: cp
 
 onInstall:
   - if (!(!'${:}' && '${fn.compareEngine(1.6):}' > 0)):
-  - if (nodes.ctrl && nodes.cp.length > 1):
-    - setRedirectToController
-    - forEach(wnode:nodes.cp):
-        cmd[${@wnode.id}]: sed -i "s#http://node.*/console#http://node${nodes.ctrl.master.id}-${env.domain}/console#g" ${STACK_PATH}/welcome-content/index.html
-  - if (!nodes.ctrl && nodes.cp.length > 1):
-    - buildCluster
+    - if (nodes.ctrl && nodes.cp.length > 1):
+      - setRedirectToController
+      - updateLink2CtrlConsole
+    - if (!nodes.ctrl && nodes.cp.length > 1):
+      - buildCluster
   - if (!'${:}' && '${fn.compareEngine(1.6):}' > 0):
     - if (nodes.ctrl):
-      - setRedirectToController
-      - forEach(wnode:nodes.cp):
-          cmd[${@wnode.id}]: sed -i "s#http://node.*/console#http://node${nodes.ctrl.master.id}-${env.domain}/console#g" ${STACK_PATH}/welcome-content/index.html
+      - if (settings.cloned != 'true'):
+        - buildCluster
+      - if (settings.cloned == 'true'):
+        - setRedirectToController
+        - updateLink2CtrlConsole
     - if (!nodes.ctrl):
       - buildCluster
 
 onAfterRedeployContainer[cp]:
-- api [cp]: environment.control.RestartNodesByGroup
+- cmd [cp]: sudo service wildfly restart
 - setRedirectToController
 - if (nodes.ctrl): setJavaMemoryOpts
 
 onAfterServiceScaleOut[cp]:
-- api [cp]: environment.control.RestartNodesByGroup
-- forEach(wnode:nodes.cp):
-    updateLink2CtrlConsole:
-      nodeId: ${@wnode.id}
-      ctrlNodeId: ${nodes.ctrl.master.id}
+- cmd [cp]: sudo service wildfly restart
+- updateLink2CtrlConsole
 - setNodeDisplayName[cp]: Worker
 - if (nodes.ctrl): setJavaMemoryOpts
 
@@ -54,16 +52,16 @@ onAfterSetCloudletCount[cp]:
 
 onAfterResetNodePassword[cp]:
   if (nodes.ctrl): addAdminUser
-  
+
 onAfterResetServicePassword[cp]:
-  if (nodes.ctrl): addAdminUser  
-  
+  if (nodes.ctrl): addAdminUser
+
 onAfterRestartNode[cp]:
 - setRedirectToController
 
 addons:
   - id: wildfly-build-cluster-addon
-    baseUrl: https://raw.githubusercontent.com/jelastic-jps/wildfly/master/addons/auto-clustering
+    baseUrl: https://raw.githubusercontent.com/SiryjVyiko/wildfly/master/addons/auto-clustering
 
     nodeGroupAlias:
       ${settings.nodeGroup}: cp
@@ -105,15 +103,21 @@ actions:
     name: Internal admin certificates
 
   buildCluster:
+  - if (nodes.ctrl):
+    - env.control.AddContainerEnvVars [${nodes.ctrl.master.id}]:
+      vars: {"CTRL":"true", "WORKER_USER": "${globals.workerUser}", "WORKER_PASSWORD":"${globals.workerPswd}", "JBOSS_MODE":"domain", "JELASTIC_EXPOSE":"4949"}
+    - cmd [ctrl]: service wildfly restart; service jelinit restart
+      user: root
+  - if (!nodes.ctrl):
   #for 5.4+
-  - if (!'${:}'):
+    - if (!'${:}'):
       addNodes:
         fixedCloudlets: ${nodes.cp.master.fixedCloudlets}
-        flexibleCloudlets: ${nodes.cp.master.flexibleCloudlets}      
+        flexibleCloudlets: ${nodes.cp.master.flexibleCloudlets}
         displayName: Controller
         nodeType: ${nodes.cp.master.nodeType}
-        tag: ${nodes.cp.master.version}      
-        nodeGroup: ctrl 
+        tag: ${nodes.cp.master.version}
+        nodeGroup: ctrl
         metadata:
           layer: ctrl
         dockerEnvVars:
@@ -127,15 +131,15 @@ actions:
             maxCount: 1
           isClusterSupport: false
           isDeploySupport: false
-  #for < 5.4      
-  - if ('${:}'):
+    #for < 5.4
+    - if ('${:}'):
       addNodes:
         fixedCloudlets: ${nodes.cp.master.fixedCloudlets}
-        flexibleCloudlets: ${nodes.cp.master.flexibleCloudlets}      
+        flexibleCloudlets: ${nodes.cp.master.flexibleCloudlets}
         displayName: Controller
         dockerName: ${nodes.cp.master.customitem.dockerName}
-        dockerTag: ${nodes.cp.master.customitem.dockerTag} 
-        nodeGroup: ctrl 
+        dockerTag: ${nodes.cp.master.customitem.dockerTag}
+        nodeGroup: ctrl
         metadata:
           layer: ctrl
         dockerEnvVars:
@@ -143,10 +147,10 @@ actions:
           WORKER_USER: ${globals.workerUser}
           WORKER_PASSWORD: ${globals.workerPswd}
           JBOSS_MODE: domain
-          JELASTIC_EXPOSE: 4949       
+          JELASTIC_EXPOSE: 4949
 
   - installAddon:
-      id: wildfly-build-cluster-addon      
+      id: wildfly-build-cluster-addon
       settings:
         migrate: ${this.migrate}
         nodeGroup: ${targetNodes.nodeGroup}
@@ -157,11 +161,8 @@ actions:
     ctrlNodeId: ${nodes.ctrl.master.id}
   - linkLayers:
       ctrlNodeId: ${nodes.ctrl.master.id}
-  - forEach(wnode:nodes.cp):
-      updateLink2CtrlConsole:
-        nodeId: ${@wnode.id}
-        ctrlNodeId: ${nodes.ctrl.master.id}
-  - api [cp]: environment.control.RestartNodesByGroup
+  - updateLink2CtrlConsole:
+  - cmd [cp]: sudo service wildfly restart
   - setRedirectToController
 
   addWokerUser:
@@ -180,7 +181,7 @@ actions:
       alias: ctrl
 
   updateLink2CtrlConsole:
-    cmd[${this.nodeId}]: sed -i "s#href=\"/console\"#href=\"http://node${nodes.ctrl.master.id}-${env.domain}/console\"#g" ${STACK_PATH}/welcome-content/index.html
+    cmd[cp]: sed -i "s#href=\"/console\"#href=\"http://node${nodes.ctrl.master.id}-${env.domain}/console\"#g" ${STACK_PATH}/welcome-content/index.html
 
   setRedirectToController:
     cmd[cp]: sudo setAdminPanelRedirect
@@ -190,3 +191,5 @@ onAfterClone:
     jps: ${baseUrl}/auto-cluster.jps?_r=${fn.random}
     envName: ${event.response.env.envName}
     nodeGroup: cp
+    settings:
+      cloned: 'true'
