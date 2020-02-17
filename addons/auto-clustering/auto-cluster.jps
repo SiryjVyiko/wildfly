@@ -109,45 +109,26 @@ actions:
     - cmd [ctrl]: service wildfly restart; service jelinit restart
       user: root
   - if (!nodes.ctrl):
-  #for 5.4+
-    - if (!'${:}'):
-      addNodes:
-        fixedCloudlets: ${nodes.cp.master.fixedCloudlets}
-        flexibleCloudlets: ${nodes.cp.master.flexibleCloudlets}
-        displayName: Controller
-        nodeType: ${nodes.cp.master.nodeType}
-        tag: ${nodes.cp.master.version}
-        nodeGroup: ctrl
-        metadata:
-          layer: ctrl
-        dockerEnvVars:
-          CTRL: 'true'
-          WORKER_USER: ${globals.workerUser}
-          WORKER_PASSWORD: ${globals.workerPswd}
-          JBOSS_MODE: domain
-          JELASTIC_EXPOSE: 4949
-        nodeGroupData:
-          validation:
-            maxCount: 1
-          isClusterSupport: false
-          isDeploySupport: false
-    #for < 5.4
-    - if ('${:}'):
-      addNodes:
-        fixedCloudlets: ${nodes.cp.master.fixedCloudlets}
-        flexibleCloudlets: ${nodes.cp.master.flexibleCloudlets}
-        displayName: Controller
-        dockerName: ${nodes.cp.master.customitem.dockerName}
-        dockerTag: ${nodes.cp.master.customitem.dockerTag}
-        nodeGroup: ctrl
-        metadata:
-          layer: ctrl
-        dockerEnvVars:
-          CTRL: 'true'
-          WORKER_USER: ${globals.workerUser}
-          WORKER_PASSWORD: ${globals.workerPswd}
-          JBOSS_MODE: domain
-          JELASTIC_EXPOSE: 4949
+    addNodes:
+      fixedCloudlets: ${nodes.cp.master.fixedCloudlets}
+      flexibleCloudlets: ${nodes.cp.master.flexibleCloudlets}
+      displayName: Controller
+      nodeType: ${nodes.cp.master.nodeType}
+      tag: ${nodes.cp.master.version}
+      nodeGroup: ctrl
+      metadata:
+        layer: ctrl
+      dockerEnvVars:
+        CTRL: 'true'
+        WORKER_USER: ${globals.workerUser}
+        WORKER_PASSWORD: ${globals.workerPswd}
+        JBOSS_MODE: domain
+        JELASTIC_EXPOSE: 4949
+      nodeGroupData:
+        validation:
+          maxCount: 1
+        isClusterSupport: false
+        isDeploySupport: false
 
   - installAddon:
       id: wildfly-build-cluster-addon
