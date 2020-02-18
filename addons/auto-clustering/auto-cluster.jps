@@ -61,7 +61,6 @@ onAfterRestartNode[cp]:
 
 addons:
   - id: wildfly-build-cluster-addon
-    baseUrl: https://raw.githubusercontent.com/SiryjVyiko/wildfly/master/addons/auto-clustering
 
     nodeGroupAlias:
       ${settings.nodeGroup}: cp
