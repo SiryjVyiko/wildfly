@@ -16,8 +16,8 @@ nodeGroupAlias:
 onInstall:
   - if ('${fn.compareEngine(1.6):}' < 1):
     - if (nodes.ctrl && nodes.cp.length > 1):
-      - setRedirectToController
-      - updateLink2CtrlConsole
+      - setRedirectToController: ${nodes.cp.join(id,)}
+      - updateLink2CtrlConsole: ${nodes.cp.join(id,)}
     - if (!nodes.ctrl && nodes.cp.length > 1):
       - buildCluster
   - if ('${fn.compareEngine(1.6):}' > 0):
@@ -25,19 +25,20 @@ onInstall:
       - if (settings.cloned != 'true'):
         - buildCluster
       - if (settings.cloned == 'true'):
-        - setRedirectToController
-        - updateLink2CtrlConsole
+        - setRedirectToController: ${nodes.cp.join(id,)}
+        - updateLink2CtrlConsole: ${nodes.cp.join(id,)}
     - if (!nodes.ctrl):
       - buildCluster
 
 onAfterRedeployContainer[cp]:
 - cmd [cp]: sudo service wildfly restart
-- setRedirectToController
+- setRedirectToController: ${nodes.cp.join(id,)}
 - if (nodes.ctrl): setJavaMemoryOpts
 
 onAfterServiceScaleOut[cp]:
 - cmd [cp]: sudo service wildfly restart
-- updateLink2CtrlConsole
+- updateLink2CtrlConsole: ${event.response.nodes.join(id,)}
+- setRedirectToController: ${event.response.nodes.join(id,)}
 - setNodeDisplayName[cp]: Worker
 - if (nodes.ctrl): setJavaMemoryOpts
 
@@ -57,7 +58,7 @@ onAfterResetServicePassword[cp]:
   if (nodes.ctrl): addAdminUser
 
 onAfterRestartNode[cp]:
-- setRedirectToController
+- setRedirectToController: ${nodes.cp.join(id,)}
 
 addons:
   - id: wildfly-build-cluster-addon
@@ -141,9 +142,9 @@ actions:
     ctrlNodeId: ${nodes.ctrl.master.id}
   - linkLayers:
       ctrlNodeId: ${nodes.ctrl.master.id}
-  - updateLink2CtrlConsole:
+  - updateLink2CtrlConsole: ${nodes.cp.join(id,)}
   - cmd [cp]: sudo service wildfly restart
-  - setRedirectToController
+  - setRedirectToController: ${nodes.cp.join(id,)}
 
   addWokerUser:
     nodeGroup: ctrl
