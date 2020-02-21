@@ -155,10 +155,10 @@ actions:
       alias: ctrl
 
   updateLink2CtrlConsole:
-    cmd[cp]: sed -i "s#href=\"/console\"#href=\"http://node${nodes.ctrl.master.id}-${env.domain}/console\"#g" ${STACK_PATH}/welcome-content/index.html
+    cmd[${this}]: sed -i "s#href=\"/console\"#href=\"http://node${nodes.ctrl.master.id}-${env.domain}/console\"#g" ${STACK_PATH}/welcome-content/index.html
 
   setRedirectToController:
-    cmd[cp]: sudo setAdminPanelRedirect
+    cmd[${this}]: sudo setAdminPanelRedirect
 
 onAfterClone:
   - script: delete MANIFEST.id; return {result:0, jps:MANIFEST};
