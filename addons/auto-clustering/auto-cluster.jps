@@ -25,6 +25,7 @@ onInstall:
 
 onAfterRedeployContainer[cp]:
 - cmd [cp]: sudo service wildfly restart
+- updateLink2CtrlConsole: ${event.cp.join(id,)}
 - setRedirectToController: ${nodes.cp.join(id,)}
 - if (nodes.ctrl): setJavaMemoryOpts
 
