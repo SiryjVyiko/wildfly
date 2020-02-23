@@ -156,7 +156,7 @@ actions:
       alias: ctrl
 
   updateLink2CtrlConsole:
-    cmd[${this}]: sed -i "s#href=\".*/console\"#href=\"http://node${nodes.ctrl.master.id}-${env.domain}/console\"#g" ${STACK_PATH}/welcome-content/index.html
+    cmd[${this}]: sed -i "s# <a href=\"http://github.com/wildfly/quickstart\">Quickstarts<\/a> \| <a href=\".*\/console\"# <a href=\"http://github.com/wildfly/quickstart\">Quickstarts<\/a> \| \<a href=\"http://node${nodes.ctrl.master.id}-${env.domain}/console\"#g" ${STACK_PATH}/welcome-content/index.html
 
   setRedirectToController:
     cmd[${this}]: sudo setAdminPanelRedirect
