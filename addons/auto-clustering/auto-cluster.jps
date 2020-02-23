@@ -54,29 +54,6 @@ onAfterResetServicePassword[cp]:
 onAfterRestartNode[cp]:
 - setRedirectToController: ${nodes.cp.join(id,)}
 
-addons:
-  - id: wildfly-build-cluster-addon
-
-    nodeGroupAlias:
-      ${settings.nodeGroup}: cp
-
-    onInstall:
-    - setupCtrl
-    - if (!(!'${:}' && '${fn.compareEngine(1.6):}' > 0)):
-        - addAdminUser
-    - setNodeDisplayName[cp]: Worker
-    - migrateToDomain
-    - setJavaMemoryOpts
-    - if (jelastic.env.control.SetNodeGroupDisplayName):
-        - api: env.control.SetNodeGroupDisplayName
-          nodeGroup: ctrl
-          displayName: Domain Controller
-        - api: env.control.SetNodeGroupDisplayName
-          nodeGroup: cp
-          displayName: Workers
-    - if (nodes.bl):
-        - setNodeDisplayName[bl]: Balancer
-
 actions:
   setJavaMemoryOpts:
     cmd[${nodes.cp.master.id}]: sudo domainMemoryConfig
@@ -123,12 +100,19 @@ actions:
             maxCount: 1
           isClusterSupport: false
           isDeploySupport: false
-
-  - installAddon:
-      id: wildfly-build-cluster-addon
-      settings:
-        migrate: ${this.migrate}
-        nodeGroup: ${targetNodes.nodeGroup}
+  - setupCtrl
+  - addAdminUser
+  - setNodeDisplayName[cp]: Worker
+  - migrateToDomain
+  - setJavaMemoryOpts
+  - api: env.control.SetNodeGroupDisplayName
+    nodeGroup: ctrl
+    displayName: Domain Controller
+  - api: env.control.SetNodeGroupDisplayName
+    nodeGroup: cp
+    displayName: Workers
+  - if (nodes.bl):
+      - setNodeDisplayName[bl]: Balancer
 
   setupCtrl:
   - mountSSLDirectory
