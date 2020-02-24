@@ -15,10 +15,10 @@ nodeGroupAlias:
 
 onInstall:
   - if (nodes.ctrl):
-    - if (${settings.clone:false}):
-      - buildCluster
-    - else:
+    - if (${settings.clone:true}):
       - setRedirectToController: ${nodes.cp.join(id,)}
+    - else:
+      - buildCluster
 #      - updateLink2CtrlConsole: ${nodes.cp.join(id,)}
   - else:
     - buildCluster
