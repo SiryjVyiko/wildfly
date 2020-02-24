@@ -80,7 +80,7 @@ actions:
     - cmd [ctrl]: service wildfly restart; service jelinit restart
       user: root
   - if (!nodes.ctrl):
-      addNodes:
+    - addNodes:
         fixedCloudlets: ${nodes.cp.master.fixedCloudlets}
         flexibleCloudlets: ${nodes.cp.master.flexibleCloudlets}
         displayName: Controller
@@ -100,8 +100,8 @@ actions:
             maxCount: 1
           isClusterSupport: false
           isDeploySupport: false
+    - addAdminUser
   - setupCtrl
-  - addAdminUser
   - setNodeDisplayName[cp]: Worker
   - migrateToDomain
   - setJavaMemoryOpts
