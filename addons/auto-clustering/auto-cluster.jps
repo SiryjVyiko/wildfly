@@ -1,4 +1,4 @@
-jpsType: update
+type: update
 version: 1.6.1
 name: WildFly Auto-Cluster
 id: wildfly-cluster
