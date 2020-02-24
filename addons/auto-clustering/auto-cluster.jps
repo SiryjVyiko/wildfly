@@ -7,9 +7,6 @@ globals:
   workerUser: worker
   workerPswd: ${fn.password}
   path: /opt/wildfly/ssl/admin
-  
-settings:
-  clone: false
 
 baseUrl: https://raw.githubusercontent.com/SiryjVyiko/wildfly/master/addons/auto-clustering
 
