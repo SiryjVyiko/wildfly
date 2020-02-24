@@ -15,9 +15,9 @@ nodeGroupAlias:
 
 onInstall:
   - if (nodes.ctrl):
-    - if (settings.cloned != 'true'):
+    - if (${settings.clone:false}):
       - buildCluster
-    - if (settings.cloned == 'true'):
+    - else:
       - setRedirectToController: ${nodes.cp.join(id,)}
       - updateLink2CtrlConsole: ${nodes.cp.join(id,)}
   - if (!nodes.ctrl):
@@ -150,4 +150,4 @@ onAfterClone:
   - install[cp]: ${response.jps}
     envName: ${event.response.env.envName}
     settings:
-      cloned: 'true'
+      clone: 'true'
