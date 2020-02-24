@@ -18,18 +18,15 @@ onInstall:
     - if (${settings.clone:false}): 
       - setRedirectToController: ${nodes.cp.join(id,)
     - else: buildCluster
-      #- updateLink2CtrlConsole: ${nodes.cp.join(id,)}
   - else: buildCluster
 
 onAfterRedeployContainer[cp]:
 - cmd [cp]: sudo service wildfly restart
-#- updateLink2CtrlConsole: ${event.cp.join(id,)}
 - setRedirectToController: ${nodes.cp.join(id,)}
 - if (nodes.ctrl): setJavaMemoryOpts
 
 onAfterServiceScaleOut[cp]:
 - cmd [cp]: sudo service wildfly restart
-#- updateLink2CtrlConsole: ${event.response.nodes.join(id,)}
 - setRedirectToController: ${event.response.nodes.join(id,)}
 - setNodeDisplayName[cp]: Worker
 - if (nodes.ctrl): setJavaMemoryOpts
@@ -118,7 +115,6 @@ actions:
     ctrlNodeId: ${nodes.ctrl.master.id}
   - linkContainers:
       ids: ${nodes.cp.join(id,)}
-  #- updateLink2CtrlConsole: ${nodes.cp.join(id,)}
   - cmd [cp]: sudo service wildfly restart
   - setRedirectToController: ${nodes.cp.join(id,)}
 
@@ -143,9 +139,6 @@ actions:
           }
         }); 
       return {result: 0, onAfterReturn: {api:api}}
-
-#  updateLink2CtrlConsole:
-#    cmd[${this}]: sed -i "s# <a href=\"http://github.com/wildfly/quickstart\">Quickstarts<\/a> \| <a href=\".*\/console\"# <a href=\"http://github.com/wildfly/quickstart\">Quickstarts<\/a> \| \<a href=\"http://node${nodes.ctrl.master.id}-${env.domain}/console\"#g" ${STACK_PATH}/welcome-content/index.html
 
   setRedirectToController:
     cmd[${this}]: sudo setAdminPanelRedirect
