@@ -15,7 +15,7 @@ nodeGroupAlias:
 
 onInstall:
   - if (nodes.ctrl):
-    - if (${settings.clone:false}):
+    - if (settings.cloned != 'true'):
       - buildCluster
     - else:
       - setRedirectToController: ${nodes.cp.join(id,)}
