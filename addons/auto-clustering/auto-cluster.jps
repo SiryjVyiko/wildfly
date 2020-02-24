@@ -157,4 +157,4 @@ onAfterClone:
   - install[cp]: ${response.jps}
     envName: ${event.response.env.envName}
     settings:
-      clone: 'true'
+      clone: true
