@@ -115,7 +115,7 @@ actions:
     ctrlNodeId: ${nodes.ctrl.master.id}
   - linkContainers:
       ids: ${nodes.cp.join(id,)}
-  - api [cp]: environment.control.RestartNodesByGroup
+  - cmd [cp]: jem service restart
   - setRedirectToController: ${nodes.cp.join(id,)}
 
   addWokerUser:
