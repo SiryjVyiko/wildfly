@@ -115,7 +115,7 @@ actions:
     ctrlNodeId: ${nodes.ctrl.master.id}
   - linkContainers:
       ids: ${nodes.cp.join(id,)}
-  - cmd [cp]: sudo service wildfly restart
+  - api [cp]: environment.control.RestartNodesByGroup
   - setRedirectToController: ${nodes.cp.join(id,)}
 
   addWokerUser:
