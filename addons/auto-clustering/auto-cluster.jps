@@ -90,8 +90,8 @@ actions:
           WORKER_PASSWORD: ${globals.workerPswd}
           JBOSS_MODE: domain
           JELASTIC_EXPOSE: 4949
-          "PASS":"${fn.password}"
-          "KEYSTORE_PASS":"${fn.password}"
+          PASS: "${fn.password}"
+          KEYSTORE_PASS: "${fn.password}"
         nodeGroupData:
           validation:
             maxCount: 1
