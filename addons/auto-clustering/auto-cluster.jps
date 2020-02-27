@@ -21,7 +21,7 @@ onInstall:
   - else: buildCluster
 
 onAfterRedeployContainer[cp]:
-- cmd [cp]: sudo service wildfly restart
+- cmd [cp]: jem service restart
 - setRedirectToController: ${nodes.cp.join(id,)}
 - if (nodes.ctrl): setJavaMemoryOpts
 
