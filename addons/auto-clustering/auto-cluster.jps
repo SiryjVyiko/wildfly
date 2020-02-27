@@ -67,6 +67,10 @@ actions:
     sourcePath: "${globals.path}"
     sourceNodeId: "${nodes.ctrl.master.id}"
     name: Internal admin certificates
+    
+  copyInternalCertificate:          
+    - cmd[${nodes.ctrl.master.id}]: encryptCert getEncFiles
+    - cmd[cp]: encryptCert setEncFiles ${response.out}
 
   buildCluster:
   - if (nodes.ctrl):
@@ -112,7 +116,7 @@ actions:
       - setNodeDisplayName[bl]: Balancer
 
   setupCtrl:
-  - mountSSLDirectory
+  - copyInternalCertificate
   - addWokerUser:
     ctrlNodeId: ${nodes.ctrl.master.id}
   - linkContainers:
