@@ -116,11 +116,11 @@ actions:
       - setNodeDisplayName[bl]: Balancer
 
   setupCtrl:
-  - copyInternalCertificate
   - addWokerUser:
     ctrlNodeId: ${nodes.ctrl.master.id}
   - linkContainers:
       ids: ${nodes.cp.join(id,)}
+  - copyInternalCertificate
   - cmd [cp]: jem service restart
   - setRedirectToController: ${nodes.cp.join(id,)}
 
