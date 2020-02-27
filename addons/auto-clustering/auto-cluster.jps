@@ -70,7 +70,7 @@ actions:
     
   copyInternalCertificate:          
     - cmd[${nodes.ctrl.master.id}]: encryptCert getEncFiles
-    - cmd[cp]: encryptCert setEncFiles ${response.out}
+    - cmd[cp]: encryptCert setEncFiles "${response.out}"
 
   buildCluster:
   - if (nodes.ctrl):
