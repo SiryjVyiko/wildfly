@@ -26,6 +26,7 @@ onAfterRedeployContainer[cp]:
 - if (nodes.ctrl): setJavaMemoryOpts
 
 onAfterServiceScaleOut[cp]:
+- copyInternalCertificate
 - cmd [cp]: sudo service wildfly restart
 - setRedirectToController: ${event.response.nodes.join(id,)}
 - setNodeDisplayName[cp]: Worker
