@@ -7,6 +7,7 @@ globals:
   workerUser: worker
   workerPswd: ${fn.password}
   path: /opt/wildfly/ssl/admin
+  keystorePass: ${fn.password(24)}
 
 baseUrl: https://raw.githubusercontent.com/SiryjVyiko/wildfly/master/addons/auto-clustering
 
@@ -21,22 +22,22 @@ onInstall:
   - else: buildCluster
 
 onAfterRedeployContainer[cp]:
-- cmd [cp]: jem service restart
+- cmd [${event.response.nodes.join(id,)}]: jem service restart
 - setRedirectToController: ${nodes.cp.join(id,)}
 - if (nodes.ctrl): setJavaMemoryOpts
 
 onAfterServiceScaleOut[cp]:
-- copyInternalCertificate
-- cmd [cp]: sudo service wildfly restart
+- copyInternalCertificate: ${event.response.nodes.join(id,)}
+- cmd [${event.response.nodes.join(id,)}]: jem service restart
 - setRedirectToController: ${event.response.nodes.join(id,)}
 - setNodeDisplayName[cp]: Worker
 - if (nodes.ctrl): setJavaMemoryOpts
 
 onAfterServiceScaleOut[bl]:
-- setNodeDisplayName[bl]: Balancer
+- setNodeDisplayName[${event.response.nodes.join(id,)}]: Balancer
 
 onAfterAddNode[bl]:
-- setNodeDisplayName[bl]: Balancer
+- setNodeDisplayName[${event.response.nodes.join(id,)}]: Balancer
 
 onAfterSetCloudletCount[cp]:
   if (nodes.ctrl): setJavaMemoryOpts
@@ -62,7 +63,7 @@ actions:
     
   copyInternalCertificate:          
     - cmd[${nodes.ctrl.master.id}]: encryptCert getEncFiles
-    - cmd[cp]: encryptCert setEncFiles '${response.out}'
+    - cmd[${this:cp}]: encryptCert setEncFiles '${response.out}'
 
   buildCluster:
   - if (nodes.ctrl):
