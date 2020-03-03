@@ -42,9 +42,6 @@ onAfterAddNode[bl]:
 onAfterSetCloudletCount[cp]:
   if (nodes.ctrl): setJavaMemoryOpts
 
-onAfterResetNodePassword[cp]:
-  if (nodes.ctrl): addAdminUser
-
 onAfterResetServicePassword[cp]:
   if (nodes.ctrl): addAdminUser
 
