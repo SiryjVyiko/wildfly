@@ -123,18 +123,10 @@ actions:
 
   linkContainers:
     script: |
-      var ids = "${this.ids}".split(","), api = [];        
-      for (var i = 0; i < ids.length; i++) 
-        api.push({
-          method: "env.control.LinkDockerNodes", 
-          params: {
-            sourceNodeId: ${nodes.ctrl.master.id}, 
-            targetNodeId: ids[i], 
-            alias: "ctrl", 
-            groupAlias: "ctrl"
-          }
-        }); 
-      return {result: 0, onAfterReturn: {api:api}}
+      var ids = "${this.ids}".split(","), links = [];       
+      for (var i = 0, n = ids.length; i < n; i++) 
+          links.push({ sourceNodeId: ${nodes.ctrl.master.id}, targetNodeId: ids[i], alias: "ctrl", groupAlias: "ctrl" });
+      return { result: 0, onAfterReturn: {"env.control.LinkDockerNodes": links} };
 
   setRedirectToController:
     cmd[${this}]: sudo setAdminPanelRedirect
