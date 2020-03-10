@@ -14,6 +14,6 @@ var resetPasswordCmd = "/opt/wildfly/bin/add-user.sh" ;
 
 var adminUserCredentials = "admin " + resp.body.replace(new RegExp("\\n", "g"), "");
 
-//jelastic.env.control.ExecCmdById('${env.envName}', session, SOURCE_NODE, toJSON([{ "command": "/usr/bin/rm -f", "params": PASS_PATH }]), false, "root");
+jelastic.env.control.ExecCmdById('${env.envName}', session, SOURCE_NODE, toJSON([{ "command": "/usr/bin/rm -f", "params": PASS_PATH }]), false, "root");
 
 return jelastic.env.control.ExecCmdByGroup('${env.envName}', session, "ctrl", toJSON([{ "command": resetPasswordCmd, "params": adminUserCredentials }]), false, false, "root");
