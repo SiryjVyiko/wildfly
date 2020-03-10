@@ -42,9 +42,6 @@ onAfterAddNode[bl]:
 onAfterSetCloudletCount[cp]:
   if (nodes.ctrl): setJavaMemoryOpts
 
-onAfterResetServicePassword[cp]:
-  if (nodes.ctrl): addAdminUser
-
 onAfterRestartNode[cp]:
 - setRedirectToController: ${nodes.cp.join(id,)}
 
