@@ -58,6 +58,7 @@ actions:
   copyInternalCertificate:          
     - cmd[${nodes.ctrl.master.id}]: encryptCert getEncFiles
     - cmd[${this:cp}]: encryptCert setEncFiles '${response.out}'
+      user: root
 
   buildCluster:
   - if (nodes.ctrl):
