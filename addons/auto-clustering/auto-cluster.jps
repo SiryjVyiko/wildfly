@@ -36,7 +36,7 @@ onAfterServiceScaleOut[cp]:
 - if (nodes.ctrl): setJavaMemoryOpts
 
 onAfterScaleIn[cp]:
-- cmd[${nodes.ctrl.master.id}]: sudo service wildfly restart 
+- cmd[${nodes.ctrl.master.id}]: sudo service wildfly reload
 
 onAfterServiceScaleOut[bl]:
 - setNodeDisplayName[${event.response.nodes.join(id,)}]: Balancer
