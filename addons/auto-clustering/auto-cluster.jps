@@ -41,9 +41,6 @@ onAfterScaleIn[cp]:
 onAfterServiceScaleOut[bl]:
 - setNodeDisplayName[${event.response.nodes.join(id,)}]: Balancer
 
-onAfterAddNode[bl]:
-- setNodeDisplayName[${event.response.nodes.join(id,)}]: Balancer
-
 onAfterSetCloudletCount[cp]:
   if (nodes.ctrl): setJavaMemoryOpts
 
