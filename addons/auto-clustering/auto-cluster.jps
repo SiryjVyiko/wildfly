@@ -47,6 +47,10 @@ onAfterSetCloudletCount[cp]:
 onAfterRestartNode[cp]:
 - setRedirectToController: ${nodes.cp.join(id,)}
 
+onAfterMigrate:
+- cmd [ctrl]: jem service restart
+- cmd [cp]: jem service restart
+
 actions:
   setJavaMemoryOpts:
     cmd[${nodes.cp.master.id}]: sudo domainMemoryConfig
