@@ -36,7 +36,7 @@ onAfterServiceScaleOut[cp]:
 - if (nodes.ctrl): setJavaMemoryOpts
 
 onAfterScaleIn[cp]:
-- cmd[${nodes.ctrl.master.id}]: jboss-cli.sh --connect controller=localhost:9999 --command="reload --host=master"
+- cmd[${nodes.ctrl.master.id}]: jboss-cli.sh --timeout=30000 --connect controller=localhost:9999 --command="reload --host=master"
 
 onAfterServiceScaleOut[bl]:
 - setNodeDisplayName[${event.response.nodes.join(id,)}]: Balancer
