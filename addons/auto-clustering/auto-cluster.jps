@@ -39,7 +39,10 @@ onAfterServiceScaleOut[cp]:
 - if (nodes.ctrl): setJavaMemoryOpts
 
 onAfterScaleIn[cp]:
-- cmd[${nodes.ctrl.master.id}]: jboss-cli.sh --timeout=30000 --connect controller=localhost:9999 --command="reload --host=master"
+- if (nodes.ctrl):
+  - cmd[${nodes.ctrl.master.id}]: jboss-cli.sh --timeout=30000 --connect controller=localhost:9999 --command="reload --host=master"
+- else:
+  - script: delete MANIFEST.id; return {result:0}
 
 onAfterServiceScaleOut[bl]:
 - setNodeDisplayName[${event.response.nodes.join(id,)}]: Balancer
@@ -142,7 +145,7 @@ actions:
     cmd[${this}]: sudo setAdminPanelRedirect
     
   updateLink2CtrlConsole:
-    cmd[${this}]: sed -i "s#href=\"/console\"#href=\"http://node${nodes.ctrl.master.id}-${env.domain}/console\"#g" ${STACK_PATH}/welcome-content/index.html
+    cmd[${this}]: sed -i "s#href=\"/console\"#href=\"${nodes.ctrl.first.url}/console\"#g" ${STACK_PATH}/welcome-content/index.html
 
 onAfterClone:
   - script: delete MANIFEST.id; return {result:0, jps:MANIFEST};
