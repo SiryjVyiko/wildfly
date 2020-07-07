@@ -20,21 +20,18 @@ onInstall:
     - if (${settings.clone:false}): 
       - cmd [cp]: jem service restart
       - setRedirectToController: ${nodes.cp.join(id,)}
-      - updateLink2CtrlConsole: ${nodes.cp.join(id,)}
     - else: buildCluster
   - else: buildCluster
 
 onAfterRedeployContainer[cp]:
 - cmd [${event.response.nodes.join(id,)}]: jem service restart
 - setRedirectToController: ${nodes.cp.join(id,)}
-- updateLink2CtrlConsole: ${nodes.cp.join(id,)}
 - if (nodes.ctrl): setJavaMemoryOpts
 
 onAfterServiceScaleOut[cp]:
 - copyInternalCertificate: ${event.response.nodes.join(id,)}
 - cmd [${event.response.nodes.join(id,)}]: jem service restart
 - setRedirectToController: ${event.response.nodes.join(id,)}
-- updateLink2CtrlConsole: ${nodes.cp.join(id,)}
 - setNodeDisplayName[cp]: Worker
 - if (nodes.ctrl): setJavaMemoryOpts
 
@@ -52,12 +49,10 @@ onAfterSetCloudletCount[cp]:
 
 onAfterRestartNode[cp]:
 - setRedirectToController: ${nodes.cp.join(id,)}
-- updateLink2CtrlConsole: ${nodes.cp.join(id,)}
 
 onAfterMigrate:
 - cmd [ctrl]: jem service restart
 - cmd [cp]: jem service restart
-- updateLink2CtrlConsole: ${nodes.cp.join(id,)}
 
 actions:
   setJavaMemoryOpts:
@@ -125,7 +120,6 @@ actions:
   - copyInternalCertificate
   - cmd [cp]: jem service restart
   - setRedirectToController: ${nodes.cp.join(id,)}
-  - updateLink2CtrlConsole: ${nodes.cp.join(id,)}
 
   addWokerUser:
     nodeGroup: ctrl
@@ -143,9 +137,6 @@ actions:
 
   setRedirectToController:
     cmd[${this}]: sudo setAdminPanelRedirect
-    
-  updateLink2CtrlConsole:
-    cmd[${this}]: sed -i "s#href=\"/console\"#href=\"${nodes.ctrl.first.url}/console\"#g" ${STACK_PATH}/welcome-content/index.html
 
 onAfterClone:
   - script: delete MANIFEST.id; return {result:0, jps:MANIFEST};
