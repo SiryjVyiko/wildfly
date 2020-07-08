@@ -117,7 +117,7 @@ actions:
   - if (nodes.bl):
       - setNodeDisplayName[bl]: Balancer
   - env.control.AddContainerEnvVars[cp]:
-    vars: {"WEBROOT":"/opt/wildfly/domain/servers/worker/tmp/"}
+      vars: {"WEBROOT":"/opt/wildfly/domain/servers/worker/tmp/"}
 
   setupCtrl:
   - addWokerUser:
