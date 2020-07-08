@@ -36,11 +36,15 @@ onAfterServiceScaleOut[cp]:
 - if (nodes.ctrl): setJavaMemoryOpts
 
 onAfterScaleIn[cp]:
-  - cmd[${nodes.ctrl.master.id}]: jboss-cli.sh --timeout=30000 --connect controller=localhost:9999 --command="reload --host=master"
+  - if (nodes.ctrl):
+    - cmd[${nodes.ctrl.master.id}]: jboss-cli.sh --timeout=30000 --connect controller=localhost:9999 --command="reload --host=master"
   
-onAfterRemoveNode[cp]:
-- if (!nodes.cp):
-  - script: delete MANIFEST.id; return {result:0}
+onBeforeRemoveNode [cp]:
+  if (nodes.cp.length == 1):
+    install:
+      type: update
+      name: WildFly Auto-Cluster
+      id: wildfly-cluster
 
 onAfterServiceScaleOut[bl]:
 - setNodeDisplayName[${event.response.nodes.join(id,)}]: Balancer
