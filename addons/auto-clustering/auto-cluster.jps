@@ -74,8 +74,6 @@ actions:
   - if (nodes.ctrl):
     - env.control.AddContainerEnvVars [${nodes.ctrl.master.id}]:
         vars: {"CTRL":"true", "WORKER_USER": "${globals.workerUser}", "WORKER_PASSWORD":"${globals.workerPswd}", "JBOSS_MODE":"domain", "JELASTIC_EXPOSE":"4949", "PASS":"${fn.password}", "KEYSTORE_PASS":"${globals.keystorePass}"}
-    - env.control.AddContainerEnvVars[cp]:
-        vars: {"WEBROOT":"/opt/wildfly/domain/servers/worker/tmp/"}
     - cmd [ctrl]: service wildfly restart; service jelinit restart
       user: root
   - else:
@@ -114,6 +112,8 @@ actions:
     displayName: Workers
   - if (nodes.bl):
       - setNodeDisplayName[bl]: Balancer
+  - env.control.AddContainerEnvVars[cp]:
+    vars: {"WEBROOT":"/opt/wildfly/domain/servers/worker/tmp/"}
 
   setupCtrl:
   - addWokerUser:
