@@ -55,7 +55,7 @@ onAfterSetCloudletCount[cp]:
 onAfterRestartNode[cp]:
 - setRedirectToController: ${nodes.cp.join(id,)}
 
-onAfterDetachExtIp[${nodes.cp.master.id}]:
+onBeforeSetExtIpCount[${nodes.cp.master.id}]:
 - cmd [${nodes.cp.master.id}]: sudo service wildfly reload
 
 onAfterMigrate:
