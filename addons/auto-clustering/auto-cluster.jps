@@ -59,6 +59,11 @@ onAfterMigrate:
 - cmd [ctrl]: jem service restart
 - cmd [cp]: jem service restart
 
+onAfterSetExtIpCount[${nodes.cp.master.id}]:	
+- cmd [${nodes.cp.master.id}]: |-
+    HOST_TO_RELOAD=$(jboss-cli.sh --timeout=30000 --connect controller=localhost:9990 --command="ls host"); 
+    jboss-cli.sh --timeout=30000 --connect controller=localhost:9990 --command="reload --host=${HOST_TO_RELOAD}";
+
 actions:
   setJavaMemoryOpts:
     cmd[${nodes.cp.master.id}]: sudo domainMemoryConfig
