@@ -75,7 +75,7 @@ actions:
     cmd[${nodes.cp.master.id}]: sudo saveDatasources;
     
   copyInternalCertificate:
-    - cmd[cp]: sed -i 's/keystore-password=\"jelasticsecurekeypassforwildfly123\"/keystore-password=\"${env.CTRL_KEYSTORE_PASS:jelasticsecurekeypassforwildfly123}\"/g' /opt/wildfly/domain/configuration/host-slave.xml 
+    - cmd[cp]: sed -i 's/keystore-password=\"jelasticsecurekeypassforwildfly123\"/keystore-password=\"\${env.CTRL_KEYSTORE_PASS:jelasticsecurekeypassforwildfly123}\"/g' /opt/wildfly/domain/configuration/host-slave.xml 
     - cmd[${nodes.ctrl.master.id}]: encryptCert getEncFiles
     - cmd[${this:cp}]: encryptCert setEncFiles '${response.out}'
       user: root
