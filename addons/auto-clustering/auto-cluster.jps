@@ -41,9 +41,10 @@ onAfterScaleIn[cp]:
   
 onBeforeRemoveNode [cp]:
   if (nodes.cp.length == 1):
-- install [cp]:
-    id: tomcat-cluster
-    name: Tomcat Cluster  
+    install:
+      type: update
+      name: WildFly Auto-Cluster
+      id: wildfly-cluster
 
 onAfterServiceScaleOut[bl]:
 - setNodeDisplayName[${event.response.nodes.join(id,)}]: Balancer
