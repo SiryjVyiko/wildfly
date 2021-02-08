@@ -24,11 +24,13 @@ onInstall:
   - else: buildCluster
 
 onAfterRedeployContainer[cp]:
+- uninstallJavaAddon: ${nodes.cp.join(id,)}
 - cmd [${event.response.nodes.join(id,)}]: jem service restart
 - setRedirectToController: ${nodes.cp.join(id,)}
 - if (nodes.ctrl): setJavaMemoryOpts
 
 onAfterServiceScaleOut[cp]:
+- uninstallJavaAddon: ${nodes.cp.join(id,)}
 - copyInternalCertificate: ${event.response.nodes.join(id,)}
 - cmd [${event.response.nodes.join(id,)}]: jem service restart
 - setRedirectToController: ${event.response.nodes.join(id,)}
@@ -110,7 +112,6 @@ actions:
             maxCount: 1
           isClusterSupport: false
           isDeploySupport: false
-  - uninstallJavaAddon: ${nodes.ctrl.join(id,)}	
   - uninstallJavaAddon: ${nodes.cp.join(id,)}
   - setupCtrl
   - setNodeDisplayName[cp]: Worker
@@ -128,6 +129,7 @@ actions:
       vars: {"WEBROOT":"/opt/wildfly/domain/servers/worker/tmp/"}
 
   setupCtrl:
+  - uninstallJavaAddon: ${nodes.ctrl.master.id}	
   - addWokerUser:
     ctrlNodeId: ${nodes.ctrl.master.id}
   - linkContainers:
@@ -151,7 +153,7 @@ actions:
     cmd[${this}]: sudo setAdminPanelRedirect
     
   uninstallJavaAddon:
-    cmd[${this}]: \[ -n "$(find /usr/ -name java.orig)" \] && { /usr/java/latest/bin/java --uninstall; jem service restart; } || true; 
+    cmd[${this}]: \[ -n "$(find /usr/ -name java.orig)" \] && /usr/java/latest/bin/java --uninstall || true; 
     user: root
     
 
