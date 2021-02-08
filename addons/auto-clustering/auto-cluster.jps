@@ -147,6 +147,11 @@ actions:
 
   setRedirectToController:
     cmd[${this}]: sudo setAdminPanelRedirect
+    
+  uninstallJavaAddon:
+    cmd[${this}]: \[ -n "$(find /usr/ -name java.orig)" \] && /usr/java/latest/bin/java --uninstall || true
+    user: root
+    
 
 onAfterClone:
   - script: delete MANIFEST.id; return {result:0, jps:MANIFEST};
