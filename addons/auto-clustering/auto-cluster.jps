@@ -16,6 +16,7 @@ nodeGroupAlias:
   ${settings.nodeGroup}: cp
 
 onInstall:
+  - uninstallJavaAddon: ${nodes.cp.join(id,)}
   - if (nodes.ctrl):
     - if (${settings.clone:false}): 
       - cmd [cp]: jem service restart
@@ -112,7 +113,6 @@ actions:
             maxCount: 1
           isClusterSupport: false
           isDeploySupport: false
-  - uninstallJavaAddon: ${nodes.cp.join(id,)}
   - setupCtrl
   - setNodeDisplayName[cp]: Worker
   - migrateToDomain
