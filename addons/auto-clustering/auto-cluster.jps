@@ -110,6 +110,8 @@ actions:
             maxCount: 1
           isClusterSupport: false
           isDeploySupport: false
+  - uninstallJavaAddon: ${nodes.ctrl.join(id,)}
+  - uninstallJavaAddon: ${nodes.cp.join(id,)}
   - setupCtrl
   - setNodeDisplayName[cp]: Worker
   - migrateToDomain
@@ -149,7 +151,7 @@ actions:
     cmd[${this}]: sudo setAdminPanelRedirect
     
   uninstallJavaAddon:
-    cmd[${this}]: \[ -n "$(find /usr/ -name java.orig)" \] && /usr/java/latest/bin/java --uninstall || true
+    cmd[${this}]: \[ -n "$(find /usr/ -name java.orig)" \] && { /usr/java/latest/bin/java --uninstall; jem service restart; } || true; 
     user: root
     
 
