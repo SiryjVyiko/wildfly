@@ -16,9 +16,7 @@ nodeGroupAlias:
   ${settings.nodeGroup}: cp
 
 onInstall:
-  - uninstallJavaAddon: ${nodes.cp.join(id,)}
   - if (nodes.ctrl):
-    - uninstallJavaAddon: ${nodes.ctrl.master.id}	
     - if (${settings.clone:false}): 
       - cmd [cp]: jem service restart
       - setRedirectToController: ${nodes.cp.join(id,)}
@@ -26,13 +24,11 @@ onInstall:
   - else: buildCluster
 
 onAfterRedeployContainer[cp]:
-- uninstallJavaAddon: ${nodes.cp.join(id,)}
 - cmd [${event.response.nodes.join(id,)}]: jem service restart
 - setRedirectToController: ${nodes.cp.join(id,)}
 - if (nodes.ctrl): setJavaMemoryOpts
 
 onAfterServiceScaleOut[cp]:
-- uninstallJavaAddon: ${nodes.cp.join(id,)}
 - copyInternalCertificate: ${event.response.nodes.join(id,)}
 - cmd [${event.response.nodes.join(id,)}]: jem service restart
 - setRedirectToController: ${event.response.nodes.join(id,)}
@@ -130,7 +126,6 @@ actions:
       vars: {"WEBROOT":"/opt/wildfly/domain/servers/worker/tmp/"}
 
   setupCtrl:
-  - uninstallJavaAddon: ${nodes.ctrl.master.id}	
   - addWokerUser:
     ctrlNodeId: ${nodes.ctrl.master.id}
   - linkContainers:
