@@ -110,8 +110,6 @@ actions:
             maxCount: 1
           isClusterSupport: false
           isDeploySupport: false
-  - uninstallJavaAddon: ${nodes.ctrl.join(id,)}
-  - uninstallJavaAddon: ${nodes.cp.join(id,)}
   - setupCtrl
   - setNodeDisplayName[cp]: Worker
   - migrateToDomain
