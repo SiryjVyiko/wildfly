@@ -37,7 +37,7 @@ onAfterServiceScaleOut[cp]:
 
 onAfterScaleIn[cp]:
   - if (nodes.ctrl):
-    - cmd[${nodes.ctrl.master.id}]: jboss-cli.sh --timeout=30000 --connect controller=localhost:9999 --command="reload --host=master"
+    - reloadMasterNode
   
 onBeforeRemoveNode [cp]:
   if (nodes.cp.length == 1):
@@ -60,6 +60,7 @@ onAfterMigrate:
 - cmd [cp]: jem service restart
 
 onAfterSetExtIpCount[${nodes.cp.master.id}]:
+- reloadMasterNode
 - cmd [${nodes.cp.master.id}]: |-
     HOST_TO_RELOAD=$(jboss-cli.sh --timeout=30000 --connect controller=localhost:9990 --command="ls host"); 
     jboss-cli.sh --timeout=30000 --connect controller=localhost:9990 --command="reload --host=${HOST_TO_RELOAD}";
@@ -152,6 +153,9 @@ actions:
     cmd[${this}]: \[ -n "$(find /usr/ -name java.orig)" \] && /usr/java/latest/bin/java --uninstall || true; 
     user: root
     
+  reloadMasterNode:
+  - if (nodes.ctrl):
+    - cmd[${nodes.ctrl.master.id}]: jboss-cli.sh --timeout=30000 --connect controller=localhost:9999 --command="reload --host=master" 
 
 onAfterClone:
   - script: delete MANIFEST.id; return {result:0, jps:MANIFEST};
